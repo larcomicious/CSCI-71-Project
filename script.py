@@ -81,6 +81,10 @@ class TransitionManager:
                 return transition.to_state
         return current_state 
 
+def read_input_file(file_path):
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+    return [line.strip() for line in lines]
 
 def main():
     q0 = Q0("q0")
@@ -123,8 +127,9 @@ def main():
 
     current_state = q0
 
-    with open('input.txt', 'r') as file:
-        lines = file.readlines()
+
+    lines = read_input_file('input.txt')
+
     for line in lines:
         user_input = line.strip()
         print(f"Processing input: {user_input}")
