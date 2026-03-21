@@ -1,4 +1,5 @@
 parentheses_map = {'<': '>', '{': '}', '[': ']', '(': ')', '!': '!'}
+results = []
 
 class State:
     error_occurred = False
@@ -166,6 +167,7 @@ def is_balanced(input_string):
         
 
 def main1():
+    global results
     setup_transitions()
     
     lines = read_input_file('input.txt')
@@ -173,11 +175,19 @@ def main1():
     for line in lines:
         input_string = line.strip()
 
-        if is_balanced(input_string):
+        valid = is_balanced(input_string)
+        results.append([input_string, valid])
+
+        if valid:
             print(f"{input_string} is valid and has balanced brackets.")
 
 def main2():
-    pass
+    for input_string, valid in results:
+        if not valid:
+            print(f"{input_string} - Invalid string.")
+            continue
+
+        print(f"{input_string} - Resulting number of x's: SAMPLE")
 
 if __name__ == "__main__":
     main1()
