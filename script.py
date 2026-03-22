@@ -1,4 +1,5 @@
 parentheses_map = {'<': '>', '{': '}', '[': ']', '(': ')', '!': '!'}
+results = []
 
 class State:
     error_occurred = False
@@ -163,9 +164,58 @@ def is_balanced(input_string):
     
     return False
     
+def evaluate(input_string):
+    # remove the outermost '!' characters
+    content = input_string[1:-1]
+    stack = []
+    x_count = 0
+
+    for char in content:
+        if char in "<{[(":
+            stack.append(char)
+
+        elif char == "x":
+            stack.append('x')
+
+        elif char in ">}])":
+            x_count = 0
+
+            # pop until opening bracket is found
+            while stack:
+                top = stack.pop()
+
+                if top == 'x':
+                    x_count += 1
+
+                else:
+                    # <: doubles the number of x's
+                    if top == '<':
+                        x_count *= 2
+                        break
+                    
+                    # {: adds 1 to the number of x's
+                    elif top == '{':
+                        x_count += 1
+                        break
+
+                    # [: resets the number of x's to 0
+                    elif top == '[':
+                        x_count = 0
+                        break
+
+                    # (: minus 1 from the number of x's, but not below 0
+                    elif top == '(':
+                        x_count = max(x_count - 1, 0)
+                    break
+            for _ in range(x_count):
+                stack.append('x')
         
+    return stack.count('x')
+
+
 
 def main1():
+    global results
     setup_transitions()
     
     lines = read_input_file('input.txt')
@@ -173,11 +223,20 @@ def main1():
     for line in lines:
         input_string = line.strip()
 
-        if is_balanced(input_string):
+        valid = is_balanced(input_string)
+        results.append([input_string, valid])
+
+        if valid:
             print(f"{input_string} is valid and has balanced brackets.")
 
 def main2():
-    pass
+    for input_string, valid in results:
+        if not valid:
+            print(f"{input_string} - Invalid string.")
+            continue
+        result = evaluate(input_string)
+
+        print(f"{input_string} - Resulting number of x's: {result}")
 
 if __name__ == "__main__":
     main1()
